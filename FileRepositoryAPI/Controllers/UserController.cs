@@ -150,24 +150,24 @@ namespace FileRepositoryAPI.WebAPI
             oUserDTO.RoleName = oRole.Name;
         }
 
-        [HttpGet]
-        [Route("GetUserInfo")]
-        public IHttpActionResult GetUserInfo()
-        {
-            try
-            {
-                DataTable userInfo = new AdHocQueries().GetUserInfo();
-                return (IHttpActionResult)this.Ok(new
-                {
-                    Items = userInfo
-                });
-            }
-            catch (Exception ex)
-            {
-                var msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-                throw new HttpResponseException(msg);
-            }
-        }
+        //[HttpGet]
+        //[Route("GetUserInfo")]
+        //public IHttpActionResult GetUserInfo()
+        //{
+        //    try
+        //    {
+        //        DataTable userInfo = new AdHocQueries().GetUserInfo();
+        //        return (IHttpActionResult)this.Ok(new
+        //        {
+        //            Items = userInfo
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+        //        throw new HttpResponseException(msg);
+        //    }
+        //}
 
         [HttpPost] //Validate
         [Route("Validate")]

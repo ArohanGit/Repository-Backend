@@ -14,7 +14,7 @@ using System.Web.Configuration;
 
 namespace FileRepository.BusinessObjects
 {
-    public partial class Document : Entity<Document>
+    public partial class Files : Entity<Files>
     {
 
         private bool IsPropertyChangeEvent = false;
@@ -41,8 +41,8 @@ namespace FileRepository.BusinessObjects
 
         #region "public ctor"
 
-        public Document(bool defaults) : base(defaults) { }
-        public Document()
+        public Files(bool defaults) : base(defaults) { }
+        public Files()
         {
             Settings();
             if (this.IsPropertyChangeEvent) PropertyChanged += PropertyChange;
@@ -99,7 +99,7 @@ namespace FileRepository.BusinessObjects
 
         #region "Audit Related"
 
-        public override void OnAudit(string eventType, Entity<Document> oldEntity, List<AuditLog> log)
+        public override void OnAudit(string eventType, Entity<Files> oldEntity, List<AuditLog> log)
         {
             base.OnAudit(eventType, oldEntity, log);
         }
@@ -175,13 +175,13 @@ namespace FileRepository.BusinessObjects
         {
             base.OnInserted();
 
-            //CreateDocumentItem();
+            //CreateFilesItem();
         }
 
         protected override void OnUpdated()
         {
             base.OnUpdated();
-            //CreateDocumentItem();
+            //CreateFilesItem();
         }
 
         protected override void OnDeleted()
@@ -193,16 +193,20 @@ namespace FileRepository.BusinessObjects
 
         #region "Helper Functions"
 
-        public List<Document> SaveList(List<Document> oDocumentList)
+        public List<Files> SaveList(List<Files> oFilesList)
         {
             try
             {
-                if (oDocumentList == null || oDocumentList.Count <= 0) return oDocumentList;
-                foreach (Document oDocument in oDocumentList)
+                if (oFilesList == null || oFilesList.Count <= 0) return oFilesList;
+                foreach (Files oFiles in oFilesList)
                 {
-                    oDocument.Save();
+                    oFiles.Save();
                 }
-                return oDocumentList;
+
+                // Load All Repository Files
+                oFilesList = new Files().LoadList(where: "RepositoryID=" + oFilesList[0].RepositoryID).ToList();
+
+                return oFilesList;
             }
             catch (Exception ex)
             {
@@ -214,7 +218,7 @@ namespace FileRepository.BusinessObjects
         {
             try
             {               
-                List<NotificationTo> oExistingNotificationToList = new NotificationTo().LoadList(where: "DocumentID=" + this.DocumentID).ToList();
+                List<NotificationTo> oExistingNotificationToList = new NotificationTo().LoadList(where: "FilesID=" + this.FilesID).ToList();
 
                 // Delete Existing
                 foreach (NotificationTo oNotificationTo in oExistingNotificationToList)
@@ -230,7 +234,7 @@ namespace FileRepository.BusinessObjects
                 foreach (User oUser in oUserList)
                 {
                     //NotificationTo oNotificationTo = new NotificationTo();
-                    //oNotificationTo.RepositoryID = this.DocumentID;
+                    //oNotificationTo.FilesID = this.FilesID;
                     //oNotificationTo.Email = oUser.EMailAddress;
                     //oNotificationTo.Save();
                 }
@@ -241,7 +245,7 @@ namespace FileRepository.BusinessObjects
             }
         }
 
-        public DataTable DocumentsNearingExpiry()
+        public DataTable FilessNearingExpiry()
         {
             try
             {
@@ -249,7 +253,7 @@ namespace FileRepository.BusinessObjects
                 string sWebUserID = System.Web.HttpContext.Current.User.Identity.Name;
                 // string sWhere = @" WHERE DATEADD(DAY, -NotificationDays, ValidTo) <= GetDate() AND WebUserID = '" +  sWebUserID + "' ORDER BY ValidTo";
                 //string sSql = GetNearingExpirySQL() + sWhere;
-                string sSql = "Exec pr_GetDocumentsNearingExpiry @WebUserID";
+                string sSql = "Exec pr_GetFilessNearingExpiry @WebUserID";
                 dt = new AppDb().GetDataTable(sSql, new object[] { "@WebUserID", sWebUserID });
                 return dt;
             }
@@ -259,7 +263,7 @@ namespace FileRepository.BusinessObjects
             }
         }
 
-        public DataTable DocumentsNearingExpiry_Email()
+        public DataTable FilessNearingExpiry_Email()
         {
             try
             {
@@ -267,7 +271,7 @@ namespace FileRepository.BusinessObjects
                 //int? nNotificationNoOfDays = (WebConfigurationManager.AppSettings["NotificationNoOfDays"] != null ? Convert.ToInt32(WebConfigurationManager.AppSettings["NotificationNoOfDays"]) : 0);
                 //string sWhere = @" WHERE ExpiresInDays >= 1 AND ExpiresInDays <= NotificationDays";
                 //string sSql = GetNearingExpirySQL() + sWhere;
-                string sSql = "Exec pr_GetDocumentsNearingExpiryEmail";
+                string sSql = "Exec pr_GetFilessNearingExpiryEmail";
                 dt = new AppDb().GetDataTable(sSql);
                 return dt;
             }
@@ -288,7 +292,7 @@ namespace FileRepository.BusinessObjects
                     FROM
                     (
 	                    SELECT 
-		                     d.DocumentID
+		                     d.FilesID
 		                    ,FileName
 		                    ,FileDescr
 		                    ,version
@@ -308,8 +312,8 @@ namespace FileRepository.BusinessObjects
 		                    ,Email
 		                    ,Name
 		                    ,WebUserID
-	                    FROM Document d
-	                    INNER JOIN NotificationTo n On n.DocumentID = d.DocumentID
+	                    FROM Files d
+	                    INNER JOIN NotificationTo n On n.FilesID = d.FilesID
 	                    INNER JOIN [User] u On u.EMailAddress = n.Email
                     ) t";
         }

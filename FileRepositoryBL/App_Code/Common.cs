@@ -36,7 +36,7 @@ namespace ASCommon
                 string MailServerUsername = ConfigurationManager.AppSettings["MailServerUsername"];
                 string MailServerPassword = ConfigurationManager.AppSettings["MailServerPassword"];
 
-                SendMail(SenderEmailAddress, SendTo, Subject, Message, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword);
+                SendMail(SenderEmailAddress, SendTo, Subject, Message, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ namespace ASCommon
                 int MailPort = Convert.ToInt32(ConfigurationManager.AppSettings["MailPort"]);
                 string MailServerUsername = ConfigurationManager.AppSettings["MailServerUsername"];
                 string MailServerPassword = ConfigurationManager.AppSettings["MailServerPassword"];
-                SendMail(SenderEmailAddress, SendTo, MailSubject, Message, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword);
+                SendMail(SenderEmailAddress, SendTo, MailSubject, Message, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace ASCommon
                 int MailPort = Convert.ToInt32(ConfigurationManager.AppSettings["MailPort"]);
                 string MailServerUsername = ConfigurationManager.AppSettings["MailServerUsername"];
                 string MailServerPassword = ConfigurationManager.AppSettings["MailServerPassword"];
-                SendMail(SenderEmailAddress, SendTo, _mailSubject, Message, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword);
+                SendMail(SenderEmailAddress, SendTo, _mailSubject, Message, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
             }
             catch (Exception ex)
             {
@@ -90,12 +90,26 @@ namespace ASCommon
             }
         }
 
-        public static void SendMail(string _from, string _to, string _subject, string _body, bool _IsBodyHtml, bool _EnableSSL, string _hostname, int _port, string _UserName, string _Password)
+        public static void SendMail(string _from, string _to, string _subject, string _body, bool _IsBodyHtml, bool _EnableSSL, string _hostname, int _port, string _UserName, string _Password, string _AttachmentPath)
         {
             try
             {
+                Attachment MyAttachment;
+
                 using (MailMessage mm = new MailMessage(_from, _to))
                 {
+                    //Attachements
+                    if (!string.IsNullOrEmpty(_AttachmentPath))
+                    {
+                        string[] sFiles = _AttachmentPath.Split('|');
+                        foreach (string path in sFiles)
+                        {
+                            MyAttachment = new Attachment(path);
+                            MyAttachment.Name = path.Substring(path.LastIndexOf("\\") + 1);
+                            mm.Attachments.Add(MyAttachment);
+                        }
+                    }
+
                     mm.Subject = _subject;
                     mm.Body = _body;
                     mm.IsBodyHtml = _IsBodyHtml;

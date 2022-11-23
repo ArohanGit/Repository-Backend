@@ -18,22 +18,22 @@ namespace FileRepositoryAPI.WebAPI
 {
 
     /// <summary>
-    /// Document
+    /// Files
     /// </summary>
     /// <seealso cref="System.Web.Http.ApiController" />
-    [RoutePrefix("api/Document")]
+    [RoutePrefix("api/Files")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     [AppAuthenticationFilter]
-    public partial class DocumentController : ApiController
+    public partial class FilesController : ApiController
     {
         static bool initialized = false;
 
-        static DocumentController()
+        static FilesController()
         {
             if (!initialized)
             {
-                Mapper.CreateMap<Document, DocumentDTO>();
-                Mapper.CreateMap<DocumentDTO, Document>();
+                Mapper.CreateMap<Files, FilesDTO>();
+                Mapper.CreateMap<FilesDTO, Files>();
                 // Child Object Mapping
 
                 initialized = true;
@@ -43,11 +43,11 @@ namespace FileRepositoryAPI.WebAPI
 
         #region "Generated Services"
 
-        // GET api/Document/DTO
+        // GET api/Files/DTO
         /// <summary>
-        /// Get Document Model DTO
+        /// Get Files Model DTO
         /// </summary>
-        /// <remarks>Document Model</remarks>
+        /// <remarks>Files Model</remarks>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
@@ -58,7 +58,7 @@ namespace FileRepositoryAPI.WebAPI
         {
             try
             {
-                DocumentDTO entityDTO = new DocumentDTO();
+                FilesDTO entityDTO = new FilesDTO();
 
                 return Ok(entityDTO);
             }
@@ -69,11 +69,11 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document
+        // GET api/Files
         /// <summary>
-        /// Get all Documents
+        /// Get all Filess
         /// </summary>
-        /// <remarks>List of all Documents</remarks>
+        /// <remarks>List of all Filess</remarks>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
@@ -87,12 +87,12 @@ namespace FileRepositoryAPI.WebAPI
                 var queryString = HttpContext.Current.Request.QueryString;
                 int skip = Convert.ToInt32(queryString["$skip"]);
                 int take = Convert.ToInt32(queryString["$top"]);
-                List<Document> oDocumentList = new Document().LoadList().ToList();
-                List<DocumentDTO> oDocumentDTOList = Mapper.Map<List<Document>, List<DocumentDTO>>(oDocumentList);
+                List<Files> oFilesList = new Files().LoadList().ToList();
+                List<FilesDTO> oFilesDTOList = Mapper.Map<List<Files>, List<FilesDTO>>(oFilesList);
 
-                SetCalculatedProperties(oDocumentDTOList);
+                SetCalculatedProperties(oFilesDTOList);
 
-                return Ok(new { Items = oDocumentDTOList, Count = oDocumentDTOList.Count });
+                return Ok(new { Items = oFilesDTOList, Count = oFilesDTOList.Count });
             }
             catch (Exception ex)
             {
@@ -101,11 +101,11 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/guid
+        // GET api/Files/guid
         /// <summary>
-        /// Get Document
+        /// Get Files
         /// </summary>
-        /// <remarks>Get Document by specified unique identifier</remarks>
+        /// <remarks>Get Files by specified unique identifier</remarks>
         /// <param name="guid">The unique identifier.</param>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
@@ -117,16 +117,16 @@ namespace FileRepositoryAPI.WebAPI
         {
             try
             {
-                if (string.IsNullOrEmpty(guid)) return Ok(new DocumentDTO());
-                Document oDocument = new Document().Load(guid, true);
-                if (oDocument == null) return NotFound();
-                DocumentDTO oDocumentDTO = Mapper.Map<Document, DocumentDTO>(oDocument);
+                if (string.IsNullOrEmpty(guid)) return Ok(new FilesDTO());
+                Files oFiles = new Files().Load(guid, true);
+                if (oFiles == null) return NotFound();
+                FilesDTO oFilesDTO = Mapper.Map<Files, FilesDTO>(oFiles);
 
-                List<DocumentDTO> oDocumentDTOList = new List<DocumentDTO>();
-                oDocumentDTOList.Add(oDocumentDTO);
-                SetCalculatedProperties(oDocumentDTOList);
+                List<FilesDTO> oFilesDTOList = new List<FilesDTO>();
+                oFilesDTOList.Add(oFilesDTO);
+                SetCalculatedProperties(oFilesDTOList);
 
-                return Ok(oDocumentDTOList[0]);
+                return Ok(oFilesDTOList[0]);
             }
             catch (Exception ex)
             {
@@ -135,37 +135,37 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // POST api/Document
+        // POST api/Files
         /// <summary>
-        /// Save Document 
+        /// Save Files 
         /// </summary>
-        /// <remarks>Add new Document</remarks>
-        /// <param name="oDTO">Document object to be saved</param>
+        /// <remarks>Add new Files</remarks>
+        /// <param name="oDTO">Files object to be saved</param>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost] //Save
         [Route()]
-        public IHttpActionResult Post([FromBody] DocumentDTO oDocumentDTO)
+        public IHttpActionResult Post([FromBody] FilesDTO oFilesDTO)
         {
             try
             {
-                if (oDocumentDTO == null) BadRequest("No DTO passed");
-                Document oDocument = Mapper.Map<DocumentDTO, Document>(oDocumentDTO); //Mapper code
+                if (oFilesDTO == null) BadRequest("No DTO passed");
+                Files oFiles = Mapper.Map<FilesDTO, Files>(oFilesDTO); //Mapper code
 
-                if (!oDocument.IsValid) return BadRequest(oDocument.Errors.ToModelState());
-                oDocument.Save();
+                if (!oFiles.IsValid) return BadRequest(oFiles.Errors.ToModelState());
+                oFiles.Save();
 
-                if (!oDocument.IsValid) return BadRequest(oDocument.Errors.ToModelState());
-                oDocument = new Document().Load(oDocument.DocumentID, true);
-                oDocumentDTO = Mapper.Map<Document, DocumentDTO>(oDocument);
+                if (!oFiles.IsValid) return BadRequest(oFiles.Errors.ToModelState());
+                oFiles = new Files().Load(oFiles.FilesID, true);
+                oFilesDTO = Mapper.Map<Files, FilesDTO>(oFiles);
 
-                List<DocumentDTO> oDocumentDTOList = new List<DocumentDTO>();
-                oDocumentDTOList.Add(oDocumentDTO);
-                SetCalculatedProperties(oDocumentDTOList);
+                List<FilesDTO> oFilesDTOList = new List<FilesDTO>();
+                oFilesDTOList.Add(oFilesDTO);
+                SetCalculatedProperties(oFilesDTOList);
 
-                return Ok(oDocumentDTOList[0]);
+                return Ok(oFilesDTOList[0]);
             }
             catch (Exception ex)
             {
@@ -174,36 +174,36 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // PUT api/Document/guid
+        // PUT api/Files/guid
         /// <summary>
-        /// Update Document
+        /// Update Files
         /// </summary>
-        /// <remarks>Update existing Document details</remarks>
-        /// <param name="oDocumentDTO">Document object to be modified</param>        
+        /// <remarks>Update existing Files details</remarks>
+        /// <param name="oFilesDTO">Files object to be modified</param>        
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPut] //Update
         [Route()]
-        public IHttpActionResult Put([FromBody] DocumentDTO oDocumentDTO)
+        public IHttpActionResult Put([FromBody] FilesDTO oFilesDTO)
         {
             try
             {
-                if (oDocumentDTO == null) BadRequest("No DTO passed");
-                Document oDocument = new Document().Load(oDocumentDTO.DocumentID);
-                if (oDocument == null) return NotFound();
-                oDocument = Mapper.Map<DocumentDTO, Document>(oDocumentDTO); //Mapper code
+                if (oFilesDTO == null) BadRequest("No DTO passed");
+                Files oFiles = new Files().Load(oFilesDTO.FilesID);
+                if (oFiles == null) return NotFound();
+                oFiles = Mapper.Map<FilesDTO, Files>(oFilesDTO); //Mapper code
 
-                if (!oDocument.IsValid) return BadRequest(oDocument.Errors.ToModelState());
-                oDocument.Update();
-                oDocumentDTO = Mapper.Map<Document, DocumentDTO>(oDocument);
+                if (!oFiles.IsValid) return BadRequest(oFiles.Errors.ToModelState());
+                oFiles.Update();
+                oFilesDTO = Mapper.Map<Files, FilesDTO>(oFiles);
 
-                List<DocumentDTO> oDocumentDTOList = new List<DocumentDTO>();
-                oDocumentDTOList.Add(oDocumentDTO);
-                SetCalculatedProperties(oDocumentDTOList);
+                List<FilesDTO> oFilesDTOList = new List<FilesDTO>();
+                oFilesDTOList.Add(oFilesDTO);
+                SetCalculatedProperties(oFilesDTOList);
 
-                return Ok(oDocumentDTOList[0]);
+                return Ok(oFilesDTOList[0]);
             }
             catch (Exception ex)
             {
@@ -212,12 +212,12 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // DELETE api/Document/guid
+        // DELETE api/Files/guid
         /// <summary>
-        /// Deletes Document Record.
+        /// Deletes Files Record.
         /// </summary>
         /// <remarks>
-        /// Deletes Document by the specified unique identifier.
+        /// Deletes Files by the specified unique identifier.
         /// </remarks>
         /// <param name="guid">The unique identifier.</param>
         /// <returns></returns>
@@ -228,11 +228,11 @@ namespace FileRepositoryAPI.WebAPI
         {
             try
             {
-                Document oDocument = new Document().Load(guid);
-                if (oDocument != null) oDocument.Delete();
-                DocumentDTO oDocumentDTO = Mapper.Map<Document, DocumentDTO>(oDocument);
+                Files oFiles = new Files().Load(guid);
+                if (oFiles != null) oFiles.Delete();
+                FilesDTO oFilesDTO = Mapper.Map<Files, FilesDTO>(oFiles);
 
-                return Ok(oDocumentDTO);
+                return Ok(oFilesDTO);
             }
             catch (Exception ex)
             {
@@ -241,12 +241,12 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/where
+        // GET api/Files/where
         /// <summary>
-        /// Get Documents
+        /// Get Filess
         /// </summary>
-        /// <remarks>Get list of Documents matching criteria</remarks>
-        /// <param name="where">Where clause to get list of Document</param>
+        /// <remarks>Get list of Filess matching criteria</remarks>
+        /// <param name="where">Where clause to get list of Files</param>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
@@ -260,10 +260,10 @@ namespace FileRepositoryAPI.WebAPI
                 var queryString = HttpContext.Current.Request.QueryString;
                 int skip = Convert.ToInt32(queryString["$skip"]);
                 int take = Convert.ToInt32(queryString["$top"]);
-                List<Document> oDocumentList = new Document().LoadList(where: where).ToList();
-                List<DocumentDTO> oDocumentDTOList = Mapper.Map<List<Document>, List<DocumentDTO>>(oDocumentList);
+                List<Files> oFilesList = new Files().LoadList(where: where).ToList();
+                List<FilesDTO> oFilesDTOList = Mapper.Map<List<Files>, List<FilesDTO>>(oFilesList);
 
-                return Ok(new { Items = oDocumentDTOList, Count = oDocumentDTOList.Count });
+                return Ok(new { Items = oFilesDTOList, Count = oFilesDTOList.Count });
             }
             catch (Exception ex)
             {
@@ -272,32 +272,32 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/LoadList
+        // GET api/Files/LoadList
         /// <summary>
-        /// Get Documents
+        /// Get Filess
         /// </summary>
-        /// <remarks>Get list of Documents by Document criteria object. Ref Model/DTO structure.</remarks>
-        /// <param name="oWhere">Document DTO object with properties to included in where criteria</param>
+        /// <remarks>Get list of Filess by Files criteria object. Ref Model/DTO structure.</remarks>
+        /// <param name="oWhere">Files DTO object with properties to included in where criteria</param>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Route("LoadList")]
-        public IHttpActionResult LoadList([FromBody] DocumentDTO oWhere)
+        public IHttpActionResult LoadList([FromBody] FilesDTO oWhere)
         {
             try
             {
                 var queryString = HttpContext.Current.Request.QueryString;
                 int skip = Convert.ToInt32(queryString["$skip"]);
                 int take = Convert.ToInt32(queryString["$top"]);
-                Document oDocumentCriteria = Mapper.Map<DocumentDTO, Document>(oWhere);
-                List<Document> oDocumentList = new Document().LoadList(oDocumentCriteria).ToList();
-                List<DocumentDTO> oDocumentDTOList = Mapper.Map<List<Document>, List<DocumentDTO>>(oDocumentList);
+                Files oFilesCriteria = Mapper.Map<FilesDTO, Files>(oWhere);
+                List<Files> oFilesList = new Files().LoadList(oFilesCriteria).ToList();
+                List<FilesDTO> oFilesDTOList = Mapper.Map<List<Files>, List<FilesDTO>>(oFilesList);
 
-                SetCalculatedProperties(oDocumentDTOList);
+                SetCalculatedProperties(oFilesDTOList);
 
-                return Ok(new { Items = oDocumentDTOList, Count = oDocumentDTOList.Count });
+                return Ok(new { Items = oFilesDTOList, Count = oFilesDTOList.Count });
             }
             catch (Exception ex)
             {
@@ -306,7 +306,7 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/Sum/column/where
+        // GET api/Files/Sum/column/where
         [HttpPost]
         [Route("Sum/{column}/{where}")]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -314,7 +314,7 @@ namespace FileRepositoryAPI.WebAPI
         {
             try
             {
-                var result = new Document().Sum(column: column, where: where);
+                var result = new Files().Sum(column: column, where: where);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -324,16 +324,16 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/Sum
+        // GET api/Files/Sum
         [HttpPost]
         [Route("Sum")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult Sum([FromBody] DocumentDTO oWhere)
+        public IHttpActionResult Sum([FromBody] FilesDTO oWhere)
         {
             try
             {
-                Document oDocumentCriteria = Mapper.Map<DocumentDTO, Document>(oWhere);
-                var result = new Document().Sum(oWhere.ScalarColumn, oDocumentCriteria);
+                Files oFilesCriteria = Mapper.Map<FilesDTO, Files>(oWhere);
+                var result = new Files().Sum(oWhere.ScalarColumn, oFilesCriteria);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -343,16 +343,16 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/Min
+        // GET api/Files/Min
         [HttpPost]
         [Route("Min")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult Min([FromBody] DocumentDTO oWhere)
+        public IHttpActionResult Min([FromBody] FilesDTO oWhere)
         {
             try
             {
-                Document oDocumentCriteria = Mapper.Map<DocumentDTO, Document>(oWhere);
-                var result = new Document().Min(oWhere.ScalarColumn, oDocumentCriteria);
+                Files oFilesCriteria = Mapper.Map<FilesDTO, Files>(oWhere);
+                var result = new Files().Min(oWhere.ScalarColumn, oFilesCriteria);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -362,16 +362,16 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/Max
+        // GET api/Files/Max
         [HttpPost]
         [Route("Max")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult Max([FromBody] DocumentDTO oWhere)
+        public IHttpActionResult Max([FromBody] FilesDTO oWhere)
         {
             try
             {
-                Document oDocumentCriteria = Mapper.Map<DocumentDTO, Document>(oWhere);
-                var result = new Document().Max(oWhere.ScalarColumn, oDocumentCriteria);
+                Files oFilesCriteria = Mapper.Map<FilesDTO, Files>(oWhere);
+                var result = new Files().Max(oWhere.ScalarColumn, oFilesCriteria);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -381,16 +381,16 @@ namespace FileRepositoryAPI.WebAPI
             }
         }
 
-        // GET api/Document/Count
+        // GET api/Files/Count
         [HttpPost]
         [Route("Count")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IHttpActionResult Count([FromBody] DocumentDTO oWhere)
+        public IHttpActionResult Count([FromBody] FilesDTO oWhere)
         {
             try
             {
-                Document oDocumentCriteria = Mapper.Map<DocumentDTO, Document>(oWhere);
-                var result = new Document().Count(oDocumentCriteria);
+                Files oFilesCriteria = Mapper.Map<FilesDTO, Files>(oWhere);
+                var result = new Files().Count(oFilesCriteria);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -404,54 +404,54 @@ namespace FileRepositoryAPI.WebAPI
 
         #region "Helper Functions"
 
-        // POST api/Document/Insert
+        // POST api/Files/Insert
         /// <summary>
-        /// Add Document
+        /// Add Files
         /// </summary>
-        /// <remarks>Add Document using JSON object in the format of Document Model/DTO</remarks>
+        /// <remarks>Add Files using JSON object in the format of Files Model/DTO</remarks>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Route("Insert")]
-        public IHttpActionResult Insert([FromBody] JObject jDocumentDTO)
+        public IHttpActionResult Insert([FromBody] JObject jFilesDTO)
         {
-            DocumentDTO oDocumentDTO = ((JObject)jDocumentDTO.ToObject<JsonObject>().value).ToObject<DocumentDTO>();
-            return this.Post(oDocumentDTO);
+            FilesDTO oFilesDTO = ((JObject)jFilesDTO.ToObject<JsonObject>().value).ToObject<FilesDTO>();
+            return this.Post(oFilesDTO);
         }
 
-        // POST api/Document/Update
+        // POST api/Files/Update
         /// <summary>
-        /// Uodate Document
+        /// Uodate Files
         /// </summary>
-        /// <remarks>Uodate Document using JSON object in the format of Document Model/DTO</remarks>
+        /// <remarks>Uodate Files using JSON object in the format of Files Model/DTO</remarks>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Route("Update")]
-        public IHttpActionResult Update([FromBody] JObject jDocumentDTO)
+        public IHttpActionResult Update([FromBody] JObject jFilesDTO)
         {
-            DocumentDTO oDocumentDTO = ((JObject)jDocumentDTO.ToObject<JsonObject>().value).ToObject<DocumentDTO>();
-            return this.Put(oDocumentDTO);
+            FilesDTO oFilesDTO = ((JObject)jFilesDTO.ToObject<JsonObject>().value).ToObject<FilesDTO>();
+            return this.Put(oFilesDTO);
         }
 
-        // POST api/Document/Remove
+        // POST api/Files/Remove
         /// <summary>
-        /// Delete Document
+        /// Delete Files
         /// </summary>
-        /// <remarks>Delete Document using JSON object in the format of Document Model/DTO</remarks>
+        /// <remarks>Delete Files using JSON object in the format of Files Model/DTO</remarks>
         /// <response code="200">Ok</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [Route("Remove")]
-        public IHttpActionResult Remove([FromBody] JObject jDocumentDTO)
+        public IHttpActionResult Remove([FromBody] JObject jFilesDTO)
         {
-            string id = jDocumentDTO.ToObject<JsonObject>().key.ToString();
+            string id = jFilesDTO.ToObject<JsonObject>().key.ToString();
             return this.Delete(id);
         }
 
@@ -459,18 +459,18 @@ namespace FileRepositoryAPI.WebAPI
 
         #region "Additional Functions"
 
-        public void SetCalculatedProperties(List<DocumentDTO> oDocumentDTOList)
+        public void SetCalculatedProperties(List<FilesDTO> oFilesDTOList)
         {
             List<NotificationTo> oNotificationToList = new NotificationTo().LoadList().ToList();
             List<User> oUserList = new User().LoadList().ToList();
 
-            foreach (DocumentDTO oDocumentDTO in oDocumentDTOList)
+            foreach (FilesDTO oFilesDTO in oFilesDTOList)
             {
-                //List<NotificationTo> oNotificationTo = oNotificationToList.FindAll(u => u.DocumentID == oDocumentDTO.DocumentID);
+                //List<NotificationTo> oNotificationTo = oNotificationToList.FindAll(u => u.FilesID == oFilesDTO.FilesID);
                 //string oNotificationToEmails = string.Join("', '", oNotificationTo.Select(o => o.Email));
                 //List<User> oUsers = oUserList.FindAll(u => u.EMailAddress.Contains(oNotificationToEmails));
                 //string oNotificationToUserIDs = string.Join(", ", oUsers.Select(o => o.UserID));
-                //oDocumentDTO.NotificationToUserIDs = oNotificationToUserIDs;
+                //oFilesDTO.NotificationToUserIDs = oNotificationToUserIDs;
             }
         }
 

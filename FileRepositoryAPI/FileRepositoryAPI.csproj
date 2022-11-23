@@ -131,6 +131,8 @@
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="MailTemplates\NotifiationMail.html" />
+    <Content Include="MailTemplates\FinalApproval.html" />
+    <Content Include="MailTemplates\RejectRepository.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -139,6 +141,13 @@
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdHocController.cs" />
+    <Compile Include="Controllers\ApproveRejectController.cs" />
+    <Compile Include="Controllers\FilesController.Base.cs" />
+    <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\NotificationToController.Base.cs" />
+    <Compile Include="Controllers\NotificationToController.cs" />
+    <Compile Include="Controllers\RepositoryController.cs" />
+    <Compile Include="Controllers\RepositoryController.Base.cs" />
     <Compile Include="Controllers\RoleController.Base.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -148,8 +157,11 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserRoleController.Base.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
+    <Compile Include="DTO\RepositoryDTO.cs" />
     <Compile Include="DTO\DocumentDTO.cs" />
     <Compile Include="DTO\DTO.cs" />
+    <Compile Include="DTO\FilesDTO.cs" />
+    <Compile Include="DTO\NotificationToDTO.cs" />
     <Compile Include="DTO\LoginInfoDTO.cs" />
     <Compile Include="DTO\RoleDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />
@@ -175,6 +187,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Data\" />
     <Folder Include="Documents\" />
+    <Folder Include="Files\" />
     <Folder Include="RPT\" />
     <Folder Include="Temp\" />
   </ItemGroup>

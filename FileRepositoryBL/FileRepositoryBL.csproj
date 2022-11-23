@@ -103,12 +103,16 @@
     <Compile Include="App_Code\Common.cs" />
     <Compile Include="App_Code\ExcelUtils.cs" />
     <Compile Include="App_Code\Utilities.cs" />
+    <Compile Include="Base\Repository.Base.cs" />
+    <Compile Include="Base\Files.Base.cs" />
     <Compile Include="Base\NotificationTo.Base.cs" />
     <Compile Include="Base\Role.Base.cs" />
     <Compile Include="Base\Document.Base.cs" />
     <Compile Include="Base\User.Base.cs" />
     <Compile Include="Base\UserRole.Base.cs" />
     <Compile Include="Data\Data.cs" />
+    <Compile Include="Partial\Repository.cs" />
+    <Compile Include="Partial\Files.cs" />
     <Compile Include="Partial\NotificationTo.cs" />
     <Compile Include="Partial\Document.cs" />
     <Compile Include="Partial\Role.cs" />

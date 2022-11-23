@@ -32,11 +32,15 @@ namespace FileRepository.BusinessObjects
         //Actual Properties from Table
         private Int32? _NotificationToID;
         public Int32? NotificationToID { get { return _NotificationToID; } set { SetProperty("NotificationToID", ref _NotificationToID, value); } }    //**PK
-        private Int32? _DocumentID;
-        public Int32? DocumentID { get { return _DocumentID; } set { SetProperty("DocumentID", ref _DocumentID, value); } }
+        private Int32? _RepositoryID;
+        public Int32? RepositoryID { get { return _RepositoryID; } set { SetProperty("RepositoryID", ref _RepositoryID, value); } }
         private string _Email;
         public string Email { get { return _Email; } set { SetProperty("Email", ref _Email, value); } }
-        
+        private string _WebUserID;
+        public string WebUserID { get { return _WebUserID; } set { SetProperty("WebUserID", ref _WebUserID, value); } }
+        private Int32? _ApproverLevel;
+        public Int32? ApproverLevel { get { return _ApproverLevel; } set { SetProperty("ApproverLevel", ref _ApproverLevel, value); } }
+
         // Required for Select2 Objects
         // public string Select2Text { get; set; }
 

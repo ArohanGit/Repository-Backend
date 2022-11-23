@@ -202,6 +202,20 @@ namespace FileRepository.BusinessObjects
             }
         }
 
+        public User GetLoggedInUserInfo()
+        {
+            try
+            {
+                string sWebUserID = System.Web.HttpContext.Current.User.Identity.Name;
+                User oUser = new User().Load(where: "WebUserID='" + sWebUserID + "'");                
+                return oUser;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
         #endregion
 
         #region "Authentication Methods"
