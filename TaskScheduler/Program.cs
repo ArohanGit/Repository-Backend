@@ -62,11 +62,11 @@ namespace TaskScheduler
                 foreach (DataRow dr in dt.Rows)
                 {
                     string To = dr["Email"].ToString();
-                    string MailSubject = dr["FileName"] + " Document " + dr["Status"].ToString();
+                    string MailSubject = dr["RepositoryName"] + " Repository " + dr["Status"].ToString();
 
                     string Body = BodyHtml;
-                    Body = Body.Replace("@FileName", dr["FileName"].ToString());
-                    Body = Body.Replace("@FileDescr", dr["FileDescr"].ToString());
+                    Body = Body.Replace("@RepositoryName", dr["RepositoryName"].ToString());
+                    Body = Body.Replace("@RepositoryDescr", dr["RepositoryDescr"].ToString());
                     Body = Body.Replace("@Name", dr["Name"].ToString());
 
                     string SenderEmailAddress = ConfigurationManager.AppSettings["SenderEmailAddress"];
@@ -75,7 +75,7 @@ namespace TaskScheduler
                     int MailPort = Convert.ToInt32(ConfigurationManager.AppSettings["MailPort"]);
                     string MailServerUsername = ConfigurationManager.AppSettings["MailServerUsername"];
                     string MailServerPassword = ConfigurationManager.AppSettings["MailServerPassword"];
-                    Common.SendMail(SenderEmailAddress, To, MailSubject, Body, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword);
+                    Common.SendMail(SenderEmailAddress, To, MailSubject, Body, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
                 }
             }
             catch (Exception ex)
