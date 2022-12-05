@@ -41,6 +41,9 @@ namespace FileRepository.BusinessObjects
         private Int32? _ApproverLevel;
         public Int32? ApproverLevel { get { return _ApproverLevel; } set { SetProperty("ApproverLevel", ref _ApproverLevel, value); } }
 
+        private string _AllowUpload;
+        public string AllowUpload { get { return _AllowUpload; } set { SetProperty("AllowUpload", ref _AllowUpload, value); } }
+        
         // Required for Select2 Objects
         // public string Select2Text { get; set; }
 

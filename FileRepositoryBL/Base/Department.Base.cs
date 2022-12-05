@@ -11,18 +11,18 @@ using FileRepository.BusinessObjects;
 
 namespace FileRepository.BusinessObjects
 {
-    public partial class Role : Entity<Role>
+    public partial class Department : Entity<Department>
     {
-        public static string TableName { get { return "Role"; } }
+        public static string TableName { get { return "Department"; } }
 
         #region "static ctor"
 
-        static Role()
+        static Department()
         {
             AppDb oAppdb = new AppDb();
-            // Role.Init(oAppdb, oAppdb.TablePrefix + TableName);
-            List<ReferenceTable> _ReferenceTables = Role.GetReferenceTables(oAppdb.TablePrefix);
-            Role.Init(oAppdb, oAppdb.TablePrefix + TableName, "RoleID", _ReferenceTables);
+            // Department.Init(oAppdb, oAppdb.TablePrefix + TableName);
+            List<ReferenceTable> _ReferenceTables = Department.GetReferenceTables(oAppdb.TablePrefix);
+            Department.Init(oAppdb, oAppdb.TablePrefix + TableName, "DepartmentID", _ReferenceTables);
         }
 
         #endregion
@@ -30,31 +30,26 @@ namespace FileRepository.BusinessObjects
         #region "Public Propeties"
 
         //Actual Properties from Table
-        private Int32? _RoleID;
-        public Int32? RoleID { get { return _RoleID; } set { SetProperty("RoleID", ref _RoleID, value); } }    //**PK
-
+        private Int32? _DepartmentID;
+        public Int32? DepartmentID { get { return _DepartmentID; } set { SetProperty("DepartmentID", ref _DepartmentID, value); } }    //**PK
+        private string _Code;
+        public string Code { get { return _Code; } set { SetProperty("Code", ref _Code, value); } }
         private string _Name;
         public string Name { get { return _Name; } set { SetProperty("Name", ref _Name, value); } }
-
-        private string _ShowGSTChallan;
-        public string ShowGSTChallan { get { return _ShowGSTChallan; } set { SetProperty("ShowGSTChallan", ref _ShowGSTChallan, value); } }
-
-        private string _OnApprovalSaveChallan;
-        public string OnApprovalSaveChallan { get { return _OnApprovalSaveChallan; } set { SetProperty("OnApprovalSaveChallan", ref _OnApprovalSaveChallan, value); } }
-
+               
         // Required for Select2 Objects
         // public string Select2Text { get; set; }
 
         #endregion
 
         #region "Additional FK Properties if any"
-
+        
         #endregion
 
         #region "Child Properties if any"
 
         //Child Class Properties if any.
-
+        
 
         #endregion
 
@@ -64,10 +59,11 @@ namespace FileRepository.BusinessObjects
             List<ReferenceTable> referenceTables = new List<ReferenceTable>();
             //// These Definitions will be used to Inner Join with reference tables.
             
-            Role.GetCustomReferenceTables(referenceTables, tablePrefix);
+            Department.GetCustomReferenceTables(referenceTables, tablePrefix);
             return referenceTables;
         }
         #endregion
+
 
         //Following code is Commented 
         //Please note it is exists in the Template

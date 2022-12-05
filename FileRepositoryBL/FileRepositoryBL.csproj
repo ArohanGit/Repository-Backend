@@ -108,6 +108,7 @@
     <Compile Include="Base\NotificationTo.Base.cs" />
     <Compile Include="Base\Role.Base.cs" />
     <Compile Include="Base\Document.Base.cs" />
+    <Compile Include="Base\Department.Base.cs" />
     <Compile Include="Base\User.Base.cs" />
     <Compile Include="Base\UserRole.Base.cs" />
     <Compile Include="Data\Data.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Partial\NotificationTo.cs" />
     <Compile Include="Partial\Document.cs" />
     <Compile Include="Partial\Role.cs" />
+    <Compile Include="Partial\Department.cs" />
     <Compile Include="Partial\User.cs" />
     <Compile Include="Partial\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

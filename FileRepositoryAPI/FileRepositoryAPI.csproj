@@ -153,6 +153,8 @@
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\DocumentController.Base.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\DepartmentController.Base.cs" />
     <Compile Include="Controllers\UserController.Base.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserRoleController.Base.cs" />
@@ -164,6 +166,7 @@
     <Compile Include="DTO\NotificationToDTO.cs" />
     <Compile Include="DTO\LoginInfoDTO.cs" />
     <Compile Include="DTO\RoleDTO.cs" />
+    <Compile Include="DTO\DepartmentDTO.cs" />
     <Compile Include="DTO\UserDTO.cs" />
     <Compile Include="DTO\UserRoleDTO.cs" />
     <Compile Include="Global.asax.cs">

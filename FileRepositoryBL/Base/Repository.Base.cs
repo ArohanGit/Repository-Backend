@@ -61,6 +61,9 @@ namespace FileRepository.BusinessObjects
         private string _RejectRemark;
         public string RejectRemark { get { return _RejectRemark; } set { SetProperty("RejectRemark", ref _RejectRemark, value); } }
 
+        private Int32? _DepartmentID;
+        public Int32? DepartmentID { get { return _DepartmentID; } set { SetProperty("DepartmentID", ref _DepartmentID, value); } }
+
         // Required for Select2 Objects
         // public string Select2Text { get; set; }
 

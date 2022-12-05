@@ -26,8 +26,8 @@ namespace FileRepositoryAPI.WebAPI
         public string IsApproved { get; set; }
         public Int32? ApprovalLevel { get; set; }
         public string RejectRemark { get; set; }
-
         public Int32? NoOfLevel { get; set; }
+        public Int32? DepartmentID { get; set; }        
     }
 }
 

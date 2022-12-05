@@ -160,6 +160,7 @@ namespace FileRepositoryAPI.WebAPI
                 }
                
                 if (!oNotificationTo.IsValid) return BadRequest(oNotificationTo.Errors.ToModelState());
+                oNotificationTo.AllowUpload = oNotificationToDTO.AllowUpload;
                 oNotificationTo.Save();
 
                 if (!oNotificationTo.IsValid) return BadRequest(oNotificationTo.Errors.ToModelState());
