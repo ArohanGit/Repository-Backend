@@ -30,6 +30,10 @@ namespace FileRepositoryAPI.WebAPI
                 NotificationTo oNotificationTo = new NotificationTo().Load(where: "RepositoryID=" + oRepository.RepositoryID + " And WebUserID='" + sWebUserID + "'");
                 if (oRepository.ApprovalLevel != oNotificationTo.ApproverLevel) { return Ok("Action already taken. Can not change status."); }
 
+                // If Is Owner & Documents not Uploaded then return.
+                int? nCnt = new Files().Count(where: "RepositoryID=" + oRepository.RepositoryID);
+                if (oRepository.ApprovalLevel == oNotificationTo.ApproverLevel && oNotificationTo.AllowUpload == "Y" && nCnt <= 0) { return Ok("Can not change status please attach files and try again."); }
+
                 new Repository().ApproveRepository(oRepository, sWebUserID);
                 return Ok("Repository approved successfully.");
             }
