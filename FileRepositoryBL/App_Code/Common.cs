@@ -94,6 +94,9 @@ namespace ASCommon
         {
             try
             {
+                string StopMail = (ConfigurationManager.AppSettings["StopMail"] != null ? ConfigurationManager.AppSettings["StopMail"] : "N");
+                if (StopMail == "Y") return;
+
                 Attachment MyAttachment;
 
                 using (MailMessage mm = new MailMessage(_from, _to))

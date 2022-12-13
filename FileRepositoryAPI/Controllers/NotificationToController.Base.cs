@@ -467,7 +467,7 @@ namespace FileRepositoryAPI.WebAPI
 
         public void SetCalculatedProperties(List<NotificationToDTO> oNotificationToDTOList)
         {
-            List<NotificationTo> oNotificationToList = new NotificationTo().LoadList().ToList();
+            // List<NotificationTo> oNotificationToList = new NotificationTo().LoadList().ToList();
             List<User> oUserList = new User().LoadList().ToList();
 
             foreach (NotificationToDTO oNotificationToDTO in oNotificationToDTOList)
@@ -477,6 +477,7 @@ namespace FileRepositoryAPI.WebAPI
                 //List<User> oUsers = oUserList.FindAll(u => u.EMailAddress.Contains(oNotificationToEmails));
                 //string oNotificationToUserIDs = string.Join(", ", oUsers.Select(o => o.UserID));
                 //oNotificationToDTO.NotificationToUserIDs = oNotificationToUserIDs;
+                oNotificationToDTO.UserName = oUserList.Find(u => u.WebUserID == oNotificationToDTO.WebUserID).Name;
             }
         }
 

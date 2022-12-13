@@ -110,8 +110,9 @@ namespace FileRepositoryAPI.WebAPI
             {
                 List<NotificationTo> oNotificationToList = new NotificationTo().LoadList(where: "RepositoryID=" + repositoryid).ToList();
                 List<NotificationToDTO> oNotificationToDTOList = Mapper.Map<List<NotificationTo>, List<NotificationToDTO>>(oNotificationToList);
-                oNotificationToList = oNotificationToList.OrderBy(x => x.ApproverLevel).ToList();
-                return Ok(new { Items = oNotificationToList, Count = oNotificationToList.Count });
+                SetCalculatedProperties(oNotificationToDTOList);
+                oNotificationToDTOList = oNotificationToDTOList.OrderBy(x => x.ApproverLevel).ToList();
+                return Ok(new { Items = oNotificationToDTOList, Count = oNotificationToDTOList.Count });
             }
             catch (Exception ex)
             {

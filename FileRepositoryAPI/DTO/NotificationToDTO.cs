@@ -17,6 +17,8 @@ namespace FileRepositoryAPI.WebAPI
         public string Email { get; set; }
         public string WebUserID { get; set; }
         public Int32? ApproverLevel { get; set; }
-        public string AllowUpload { get; set; }        
+        public string AllowUpload { get; set; }
+
+        public string UserName { get; set; }
     }
 }

@@ -150,24 +150,27 @@ namespace FileRepositoryAPI.WebAPI
             oUserDTO.RoleName = oRole.Name;
         }
 
-        //[HttpGet]
-        //[Route("GetUserInfo")]
-        //public IHttpActionResult GetUserInfo()
-        //{
-        //    try
-        //    {
-        //        DataTable userInfo = new AdHocQueries().GetUserInfo();
-        //        return (IHttpActionResult)this.Ok(new
-        //        {
-        //            Items = userInfo
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
-        //        throw new HttpResponseException(msg);
-        //    }
-        //}
+        [HttpGet]
+        [Route("GetApproverList/{webuserid}")]
+        public IHttpActionResult GetApproverList(string webuserid)
+        {
+            try
+            {
+                // string sWebUserID = System.Web.HttpContext.Current.User.Identity.Name;
+                List<User> oUserList = new User().LoadList(where: "WebUserID <> '" + webuserid + "'").ToList();
+                List<UserDTO> oUserDTOList = Mapper.Map<List<User>, List<UserDTO>>(oUserList);
+
+                // Set RoleID & Name
+                foreach (UserDTO oUserDTO in oUserDTOList) { SetRoleName(oUserDTO); }
+
+                return Ok(new { Items = oUserDTOList, Count = oUserDTOList.Count });
+            }
+            catch (Exception ex)
+            {
+                var msg = Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+                throw new HttpResponseException(msg);
+            }
+        }
 
         [HttpPost] //Validate
         [Route("Validate")]
