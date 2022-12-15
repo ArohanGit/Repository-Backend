@@ -391,9 +391,17 @@ namespace FileRepository.BusinessObjects
                 Body = Body.Replace("@RepositoryName", oRepository.RepositoryName);
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oUser.Name);
-                Body = Body.Replace("@ApproveUrl", ApproveUrl);
-                Body = Body.Replace("@RejectUrl", RejectUrl);
-                //Body = Body.Replace("@Table", RepositoryDetails(nRepositoryID));
+                //Body = Body.Replace("@ApproveUrl", ApproveUrl);
+                //Body = Body.Replace("@RejectUrl", RejectUrl);
+
+                // Buttons Show only if Files Uploaded
+                int? nCnt = new Files().Count(where: "RepositoryID=" + oRepository.RepositoryID);
+                string sButtonHtml = @"<p class=MsoNormal> <a id='btnAccept' href='" + ApproveUrl + "' style='-webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none; background-color: Green; color: White; border: 2px; border-color: 2px; padding: 10px; font-weight: bold;'> Approve </ a > &nbsp; <a href = '" + RejectUrl + "' style = '-webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none; background-color: Red; color: White; border: 2px; border-color: 2px; padding: 5px; font-weight: bold;' > Reject </ a > </ p >";
+                if (oRepository.ApprovalLevel == oNotificationTo.ApproverLevel && oNotificationTo.AllowUpload == "Y" && nCnt <= 0)
+                {
+                    sButtonHtml = "";
+                }
+                Body = Body.Replace("@Buttons", sButtonHtml);
 
                 string SenderEmailAddress = ConfigurationManager.AppSettings["SenderEmailAddress"];
                 bool EnableSSL = ConfigurationManager.AppSettings["EnableSSL"] == "False" ? false : true;
