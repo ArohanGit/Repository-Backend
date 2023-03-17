@@ -133,6 +133,7 @@ namespace FileRepository.BusinessObjects
                 //this.CreatedBy = oUser.UserID;
                 // Please note will not get identity informtion here because we are sending information in FormData and AppAuthenticationFilter is not applied.
 
+                this.RepositoryNo = GetRepoNo(this.DepartmentID);
                 this.CreatedOn = DateTime.Today;
                 this.UpdatedOn = DateTime.Today;
                 this.version = 0;
@@ -247,6 +248,7 @@ namespace FileRepository.BusinessObjects
                     NotificationTo oNotificationTo = new NotificationTo();
                     oNotificationTo.RepositoryID = this.RepositoryID;
                     oNotificationTo.Email = oUser.EMailAddress;
+                    oNotificationTo.ApprovedOn = DateTime.Now;
                     oNotificationTo.Save();
                 }
             }
@@ -277,6 +279,8 @@ namespace FileRepository.BusinessObjects
                 oRepository.UpdatedOn = DateTime.Now;
                 oRepository.IsApproved = "N";
                 oRepository.RejectRemark = "";
+                oRepository.Remark = "";
+                oRepository.RepoDuration = "One Time";
                 oRepository.Save();
 
                 // Save Notification To List
@@ -293,6 +297,21 @@ namespace FileRepository.BusinessObjects
             {
                 throw (ex);
             }
+        }
+
+        private string GetRepoNo(Int32? DepartmentID)
+        {
+            string sMaxRepositoryNo = "";
+            string sSql = @"Declare @MaxRepositoryNo int = 0
+                            Declare @RepoNoWithPading nvarchar(4)
+                            Declare @Department nvarchar(10)
+                            SET @MaxRepositoryNo = IsNull((Select Top 1 Max(Right(RepositoryNo,4)) As RepositoryNo From dbo.Repository),0) + 1
+                            Set @RepoNoWithPading = Right('0000' + CONVERT(VARCHAR(4), @MaxRepositoryNo),4)
+                            SET @Department = (Select Top 1 [Code] From Department Where DepartmentID = " + DepartmentID ;
+                    sSql = sSql + " ) SELECT @Department + '-' + CONVERT(nvarchar(8),GETDATE(),112) + @RepoNoWithPading As RepositoryNo";
+            object obj = new AppDb().Scalar(sSql);
+            if (obj != null) { sMaxRepositoryNo = Convert.ToString(obj); }
+            return sMaxRepositoryNo;
         }
 
         public DataTable GetRepositoryList(string sMode)
@@ -375,6 +394,8 @@ namespace FileRepository.BusinessObjects
                 NotificationTo oNotificationTo = new NotificationTo().Load(where: "RepositoryID=" + oRepository.RepositoryID + " And ApproverLevel=" + oRepository.ApprovalLevel);
                 if (oNotificationTo == null) return;
                 User oUser = new User().Load(where: "WebUserID='" + oNotificationTo.WebUserID + "'");
+                Department oDepartment = new Department().Load(where: "DepartmentID =" + oRepository.DepartmentID);
+                DataTable dt = new Repository().RepositoryUsers(oRepository.RepositoryID);
 
                 bool IsBodyHtml = true;
                 string Path = ConfigurationManager.AppSettings["NotificationTemplatePath"];
@@ -382,7 +403,18 @@ namespace FileRepository.BusinessObjects
                 string BodyHtml = File.ReadAllText(Path);
 
                 string To = oNotificationTo.Email;
-                string MailSubject = "Approve " + oRepository.RepositoryName + " repository.";
+                string MailSubject = "";
+
+                int? nCnt = new Files().Count(where: "RepositoryID=" + oRepository.RepositoryID);
+
+                if (oRepository.ApprovalLevel == oNotificationTo.ApproverLevel && oNotificationTo.AllowUpload == "Y" && nCnt <= 0)
+                {
+                     MailSubject = "Please attached document - " + oRepository.RepositoryName + " repository.";
+                }
+                else
+                {
+                     MailSubject = "Waiting for your apporval - " + oRepository.RepositoryName + " repository.";
+                }                    
 
                 string ApproveUrl = ApplicationUrl + "ApproveReject/ApproveRepository/" + oRepository.RepositoryID.ToString() + "|" + oUser.WebUserID;
                 string RejectUrl = ApplicationUrl + "ApproveReject/RejectRepository/" + oRepository.RepositoryID.ToString() + "|" + oUser.WebUserID;
@@ -391,11 +423,24 @@ namespace FileRepository.BusinessObjects
                 Body = Body.Replace("@RepositoryName", oRepository.RepositoryName);
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oUser.Name);
+                Body = Body.Replace("@DepartmentName", oDepartment.Name); 
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Body = Body.Replace("@NCreater", dr["NCreater"].ToString());
+                    Body = Body.Replace("@RCrater", dr["RCrater"].ToString());
+                    Body = Body.Replace("@AppName1", dr["AppName1"].ToString());
+                    Body = Body.Replace("@RName1", dr["RName1"].ToString());
+                    Body = Body.Replace("@AppName2", dr["AppName2"].ToString());
+                    Body = Body.Replace("@RName2", dr["RName2"].ToString());
+                    Body = Body.Replace("@AppName3", dr["AppName3"].ToString());
+                    Body = Body.Replace("@RName3", dr["RName3"].ToString());
+                }
+                   
                 //Body = Body.Replace("@ApproveUrl", ApproveUrl);
                 //Body = Body.Replace("@RejectUrl", RejectUrl);
 
                 // Buttons Show only if Files Uploaded
-                int? nCnt = new Files().Count(where: "RepositoryID=" + oRepository.RepositoryID);
+                
                 string sButtonHtml = @"<p class=MsoNormal> <a id='btnAccept' href='" + ApproveUrl + "' style='-webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none; background-color: Green; color: White; border: 2px; border-color: 2px; padding: 10px; font-weight: bold;'> Approve </ a > &nbsp; <a href = '" + RejectUrl + "' style = '-webkit-appearance: button; -moz-appearance: button; appearance: button; text-decoration: none; background-color: Red; color: White; border: 2px; border-color: 2px; padding: 5px; font-weight: bold;' > Reject </ a > </ p >";
                 if (oRepository.ApprovalLevel == oNotificationTo.ApproverLevel && oNotificationTo.AllowUpload == "Y" && nCnt <= 0)
                 {
@@ -439,10 +484,11 @@ namespace FileRepository.BusinessObjects
             try
             {
                 if (oRepository == null) return;
-                // NotificationTo oNotificationTo = new NotificationTo().Load(where: "RepositoryID=" + oRepository.RepositoryID + " And ApproverLevel=" + oRepository.ApprovalLevel);
+                NotificationTo oNotificationTo = new NotificationTo().Load(where: "RepositoryID=" + oRepository.RepositoryID + " And AllowUpload='Y'");
                 // if (oNotificationTo == null) return;
-                // User oUser = new User().Load(where: "WebUserID='" + oNotificationTo.WebUserID + "'");
+                User oUserOwner = new User().Load(where: "WebUserID='" + oNotificationTo.WebUserID + "'");
                 User oUser = new User().Load(oRepository.CreatedBy);
+                Department oDepartment = new Department().Load(where: "DepartmentID =" + oRepository.DepartmentID);
 
                 bool IsBodyHtml = true;
                 string Path = ConfigurationManager.AppSettings["FinalApprovalNotificationTemplatePath"];
@@ -450,13 +496,16 @@ namespace FileRepository.BusinessObjects
                 string BodyHtml = File.ReadAllText(Path);
 
                 string To = oUser.EMailAddress;
-                string MailSubject = oRepository.RepositoryName + " Repository Final Approval.";
+                string Cc = oUserOwner.EMailAddress;
+                string MailSubject = oRepository.RepositoryName + " Repository Approved And Document is active.";
 
                 string Body = BodyHtml;
 
                 Body = Body.Replace("@RepositoryName", oRepository.RepositoryName);
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oUser.Name);
+                Body = Body.Replace("@OwnerName", oUserOwner.Name);
+                Body = Body.Replace("@DepartmentName", oDepartment.Name);
 
                 string SenderEmailAddress = ConfigurationManager.AppSettings["SenderEmailAddress"];
                 bool EnableSSL = ConfigurationManager.AppSettings["EnableSSL"] == "False" ? false : true;
@@ -465,6 +514,7 @@ namespace FileRepository.BusinessObjects
                 string MailServerUsername = ConfigurationManager.AppSettings["MailServerUsername"];
                 string MailServerPassword = ConfigurationManager.AppSettings["MailServerPassword"];
                 Common.SendMail(SenderEmailAddress, To, MailSubject, Body, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
+                Common.SendMail(SenderEmailAddress, Cc, MailSubject, Body, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
             }
             catch (Exception ex)
             {
@@ -479,6 +529,7 @@ namespace FileRepository.BusinessObjects
                 if (oRepository == null) return;
                 User oRejectedByUser = new User().Load(where: "WebUserID='" + sRejectedByWebUserID + "'");
                 User oCreatorUser = new User().Load(oRepository.CreatedBy);
+                Department oDepartment = new Department().Load(where: "DepartmentID =" + oRepository.DepartmentID);
 
                 bool IsBodyHtml = true;
                 string Path = ConfigurationManager.AppSettings["RejectNotificationTemplatePath"];
@@ -494,6 +545,7 @@ namespace FileRepository.BusinessObjects
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oCreatorUser.Name);
                 Body = Body.Replace("@RejectedBy", oRejectedByUser.Name);
+                Body = Body.Replace("@DepartmentName", oDepartment.Name);
 
                 string SenderEmailAddress = ConfigurationManager.AppSettings["SenderEmailAddress"];
                 bool EnableSSL = ConfigurationManager.AppSettings["EnableSSL"] == "False" ? false : true;
@@ -520,6 +572,24 @@ namespace FileRepository.BusinessObjects
                 //string sSql = GetNearingExpirySQL() + sWhere;
                 string sSql = "Exec pr_GetRepositorysNearingExpiry @WebUserID";
                 dt = new AppDb().GetDataTable(sSql, new object[] { "@WebUserID", sWebUserID });
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+        }
+
+        private DataTable RepositoryUsers(int? RepositoryID)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                //string sWebUserID = System.Web.HttpContext.Current.User.Identity.Name;
+                // string sWhere = @" WHERE DATEADD(DAY, -NotificationDays, ValidTo) <= GetDate() AND WebUserID = '" +  sWebUserID + "' ORDER BY ValidTo";
+                //string sSql = GetNearingExpirySQL() + sWhere;
+                string sSql = "Exec pr_RepositoryUsers @RepositoryID";
+                dt = new AppDb().GetDataTable(sSql, new object[] { "@RepositoryID", RepositoryID });
                 return dt;
             }
             catch (Exception ex)

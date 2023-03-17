@@ -130,6 +130,7 @@
   <ItemGroup>
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <Content Include="MailTemplates\ExpiryNotifiationMail.html" />
     <Content Include="MailTemplates\NotifiationMail.html" />
     <Content Include="MailTemplates\FinalApproval.html" />
     <Content Include="MailTemplates\RejectRepository.html" />

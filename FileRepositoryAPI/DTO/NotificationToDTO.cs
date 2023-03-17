@@ -18,6 +18,7 @@ namespace FileRepositoryAPI.WebAPI
         public string WebUserID { get; set; }
         public Int32? ApproverLevel { get; set; }
         public string AllowUpload { get; set; }
+        public DateTime? ApprovedOn { get; set; }
 
         public string UserName { get; set; }
     }

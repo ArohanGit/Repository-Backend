@@ -43,7 +43,8 @@ namespace FileRepository.BusinessObjects
 
         private string _AllowUpload;
         public string AllowUpload { get { return _AllowUpload; } set { SetProperty("AllowUpload", ref _AllowUpload, value); } }
-        
+        private DateTime? _ApprovedOn;
+        public DateTime? ApprovedOn { get { return _ApprovedOn; } set { SetProperty("ApprovedOn", ref _ApprovedOn, value); } }
         // Required for Select2 Objects
         // public string Select2Text { get; set; }
 

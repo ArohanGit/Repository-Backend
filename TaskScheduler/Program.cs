@@ -55,19 +55,24 @@ namespace TaskScheduler
                 DataTable dt = new Document().DocumentsNearingExpiry_Email();
                 if (dt == null || dt.Rows.Count <= 0) return;
                 bool IsBodyHtml = true;
-                string Path = ConfigurationManager.AppSettings["NotificationTemplatePath"];
+                string Path = ConfigurationManager.AppSettings["NotificationExpireRepoTemplatePath"];
                 string ApplicationUrl = ConfigurationManager.AppSettings["ApplicationUrl"];
                 string BodyHtml = File.ReadAllText(Path);
 
                 foreach (DataRow dr in dt.Rows)
                 {
-                    string To = dr["Email"].ToString();
-                    string MailSubject = dr["RepositoryName"] + " Repository " + dr["Status"].ToString();
+                    string To = dr["EmailAddress"].ToString();
+                    string Cc = dr["OwnerEmail"].ToString();
+                    string MailSubject = "Approved And Document is active - " +  dr["RepositoryName"] + " Repository " + dr["Status"].ToString();
 
                     string Body = BodyHtml;
                     Body = Body.Replace("@RepositoryName", dr["RepositoryName"].ToString());
                     Body = Body.Replace("@RepositoryDescr", dr["RepositoryDescr"].ToString());
                     Body = Body.Replace("@Name", dr["Name"].ToString());
+                    Body = Body.Replace("@OwnerName", dr["OwnerName"].ToString());
+                    Body = Body.Replace("@Status", dr["Status"].ToString());
+                    Body = Body.Replace("@DepartmentName", dr["DepartmentName"].ToString());
+
 
                     string SenderEmailAddress = ConfigurationManager.AppSettings["SenderEmailAddress"];
                     bool EnableSSL = ConfigurationManager.AppSettings["EnableSSL"] == "False" ? false : true;
@@ -76,6 +81,7 @@ namespace TaskScheduler
                     string MailServerUsername = ConfigurationManager.AppSettings["MailServerUsername"];
                     string MailServerPassword = ConfigurationManager.AppSettings["MailServerPassword"];
                     Common.SendMail(SenderEmailAddress, To, MailSubject, Body, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
+                    Common.SendMail(SenderEmailAddress, Cc, MailSubject, Body, IsBodyHtml, EnableSSL, MailServer, MailPort, MailServerUsername, MailServerPassword, null);
                 }
             }
             catch (Exception ex)

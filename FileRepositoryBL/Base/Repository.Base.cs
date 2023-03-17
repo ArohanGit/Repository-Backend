@@ -63,7 +63,13 @@ namespace FileRepository.BusinessObjects
 
         private Int32? _DepartmentID;
         public Int32? DepartmentID { get { return _DepartmentID; } set { SetProperty("DepartmentID", ref _DepartmentID, value); } }
-
+        private string _RepositoryNo;
+        public string RepositoryNo { get { return _RepositoryNo; } set { SetProperty("RepositoryNo", ref _RepositoryNo, value); } }
+        private string _Remark;
+        public string Remark { get { return _Remark; } set { SetProperty("Remark", ref _Remark, value); } }
+        private string _RepoDuration;
+        public string RepoDuration { get { return _RepoDuration; } set { SetProperty("RepoDuration", ref _RepoDuration, value); } }
+        
         // Required for Select2 Objects
         // public string Select2Text { get; set; }
 

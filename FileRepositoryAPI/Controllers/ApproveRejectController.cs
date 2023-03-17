@@ -75,7 +75,7 @@ namespace FileRepositoryAPI.WebAPI
                 if (oNotificationTo == null) { return Ok("Repository rejected successfully."); }
                 Repository.SendRejectNotification(oRepository, oNotificationTo.WebUserID);
 
-                return Ok("Repository rejected successfully.");
+                return Ok("Repository rejected successfully."); 
             }
             catch (Exception ex)
             {
