@@ -10,7 +10,8 @@ using System.Net.Mail;
 using System.Net;
 using System.IO;
 using ASCommon;
-using FileRepository.BusinessObjects;
+
+
 
 namespace TaskScheduler
 {
@@ -22,6 +23,7 @@ namespace TaskScheduler
         [STAThread]
         static void Main()
         {
+           
             ExecuteSchedule();
             Application.Exit();
         }
@@ -39,6 +41,7 @@ namespace TaskScheduler
         {
             try
             {
+                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
                 // Send Notification to Trustee
                 SendNotification();
             }
@@ -48,24 +51,68 @@ namespace TaskScheduler
             }
         }
 
+        public static DataTable getDataTable()
+        { 
+
+        string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
+        string storedProcedureName = "pr_GetDocumentsNearingExpiryEmail";
+
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+               
+                using (SqlCommand command = new SqlCommand(storedProcedureName, connection))
+                {
+
+                    command.CommandType = CommandType.StoredProcedure; 
+
+                    connection.Open();
+
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        // Load the results into the DataTable
+                        dataTable.Load(reader);
+                    }
+
+                    connection.Close();
+
+                }
+
+            }
+            return dataTable;
+        }
+
         public static void SendNotification()
         {
             try
             {
-                DataTable dt = new Document().DocumentsNearingExpiry_Email();
+                //MessageBox.Show("Before BL");
+
+               
+                DataTable dt = getDataTable();
+
+                //MessageBox.Show("After BL");
+
+                //int? nNotificationNoOfDays = (WebConfigurationManager.AppSettings["NotificationNoOfDays"] != null ? Convert.ToInt32(WebConfigurationManager.AppSettings["NotificationNoOfDays"]) : 0);
+                //string sWhere = @" WHERE ExpiresInDays >= 1 AND ExpiresInDays <= NotificationDays";
+                //string sSql = GetNearingExpirySQL() + sWhere;
                 if (dt == null || dt.Rows.Count <= 0) return;
                 bool IsBodyHtml = true;
                 string Path = ConfigurationManager.AppSettings["NotificationExpireRepoTemplatePath"];
                 string ApplicationUrl = ConfigurationManager.AppSettings["ApplicationUrl"];
+                //MessageBox.Show(Path + "-" + ApplicationUrl);
                 string BodyHtml = File.ReadAllText(Path);
 
                 foreach (DataRow dr in dt.Rows)
                 {
                     string To = dr["EmailAddress"].ToString();
                     string Cc = dr["OwnerEmail"].ToString();
-                    string MailSubject = "Approved And Document is active - " +  dr["RepositoryName"] + " Repository " + dr["Status"].ToString();
+                    string MailSubject = " Repository " + dr["Status"].ToString() + "-" + dr["RepositoryNo"].ToString() + "-" + dr["RepositoryName"] ;
 
                     string Body = BodyHtml;
+                    Body = Body.Replace("@RepositoryNo", dr["RepositoryNo"].ToString());
                     Body = Body.Replace("@RepositoryName", dr["RepositoryName"].ToString());
                     Body = Body.Replace("@RepositoryDescr", dr["RepositoryDescr"].ToString());
                     Body = Body.Replace("@Name", dr["Name"].ToString());
@@ -86,6 +133,7 @@ namespace TaskScheduler
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 throw (ex);
             }
         }

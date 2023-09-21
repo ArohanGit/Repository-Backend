@@ -420,6 +420,7 @@ namespace FileRepository.BusinessObjects
                 string RejectUrl = ApplicationUrl + "ApproveReject/RejectRepository/" + oRepository.RepositoryID.ToString() + "|" + oUser.WebUserID;
                 string Body = BodyHtml;
 
+                Body = Body.Replace("@RepositoryNo", oRepository.RepositoryNo);
                 Body = Body.Replace("@RepositoryName", oRepository.RepositoryName);
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oUser.Name);
@@ -500,7 +501,7 @@ namespace FileRepository.BusinessObjects
                 string MailSubject = oRepository.RepositoryName + " Repository Approved And Document is active.";
 
                 string Body = BodyHtml;
-
+                Body = Body.Replace("@RepositoryNo", oRepository.RepositoryNo);
                 Body = Body.Replace("@RepositoryName", oRepository.RepositoryName);
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oUser.Name);
@@ -541,6 +542,7 @@ namespace FileRepository.BusinessObjects
 
                 string Body = BodyHtml;
 
+                Body = Body.Replace("@RepositoryNo", oRepository.RepositoryNo);
                 Body = Body.Replace("@RepositoryName", oRepository.RepositoryName);
                 Body = Body.Replace("@RepositoryDescr", oRepository.RepositoryDescr);
                 Body = Body.Replace("@UserName", oCreatorUser.Name);

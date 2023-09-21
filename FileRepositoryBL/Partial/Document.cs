@@ -19,6 +19,7 @@ namespace FileRepository.BusinessObjects
 
         private bool IsPropertyChangeEvent = false;
         private string tablePrefix;
+        private string msg = "";
 
         #region "Database context"
         protected override void SetDb(Database dbQualified, string tableNameQualified)
@@ -261,22 +262,26 @@ namespace FileRepository.BusinessObjects
 
         public DataTable DocumentsNearingExpiry_Email()
         {
+            
             try
             {
+                
+                this.msg = "Before Pr exe";
                 DataTable dt = new DataTable();
                 //int? nNotificationNoOfDays = (WebConfigurationManager.AppSettings["NotificationNoOfDays"] != null ? Convert.ToInt32(WebConfigurationManager.AppSettings["NotificationNoOfDays"]) : 0);
                 //string sWhere = @" WHERE ExpiresInDays >= 1 AND ExpiresInDays <= NotificationDays";
                 //string sSql = GetNearingExpirySQL() + sWhere;
                 string sSql = "Exec pr_GetDocumentsNearingExpiryEmail";
                 dt = new AppDb().GetDataTable(sSql);
+                this.msg = "After Pr exe";
                 return dt;
             }
             catch (Exception ex)
             {
-                throw (ex);
+                throw new Exception(this.msg);
             }
         }
-
+        
         public string GetNearingExpirySQL()
         {
             return @"SELECT
